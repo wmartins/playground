@@ -1,3 +1,3 @@
-console.log('it works!');
+require('../stylesheets/index.css');
 
-const x = require('../stylesheets/index.css');
+console.log('it works!');
