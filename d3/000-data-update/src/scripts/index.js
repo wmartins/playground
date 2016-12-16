@@ -37,7 +37,7 @@ const update = (el, data) => {
     const yScale =
         d3.scaleLinear().
         domain([0, d3.max(data, (d) => d)]).
-        range([10, height - yPadding])
+        range([height - yPadding, yPadding])
     ;
 
     const xAxis =
@@ -45,8 +45,7 @@ const update = (el, data) => {
         ticks(data.length);
 
     const yAxis =
-        d3.axisLeft(yScale).
-        ticks(5);
+        d3.axisLeft(yScale);
 
     el.selectAll('g.axis.x').remove();
 
@@ -89,13 +88,13 @@ const update = (el, data) => {
 
     exit.transition().
         attr('height', 0).
-        attr('y', height).
+        attr('y', d => height - yPadding).
         remove()
     ;
 };
 
 update(g, generateData(getN(30, 50)));
 
-setTimeout(() => {
+setInterval(() => {
     update(g, generateData(getN(30, 50)));
 }, 2000);
