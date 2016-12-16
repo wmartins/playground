@@ -22,7 +22,7 @@ svg.
 const g = svg.append('g');
 
 const update = (el, data) => {
-    const xPadding = 20;
+    const xPadding = 40;
 
     const xSpacing = 3;
 
@@ -44,12 +44,23 @@ const update = (el, data) => {
         d3.axisBottom(xScale).
         ticks(data.length);
 
+    const yAxis =
+        d3.axisLeft(yScale).
+        ticks(5);
+
+    el.selectAll('g.axis.x').remove();
+
     el.append('g').
         attr('class', 'axis x').
         attr('transform', `translate(0, ${height - 20})`).
         call(xAxis);
 
-    el.select('g.axis.x').call(xAxis);
+    el.selectAll('g.axis.y').remove();
+
+    el.append('g').
+        attr('class', 'axis y').
+        attr('transform', `translate(${xPadding}, 0)`).
+        call(yAxis);
 
     const update = el.selectAll('.bar').data(data);
     
