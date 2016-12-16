@@ -5,7 +5,7 @@ const d3 = require('d3');
 const root = document.createElement('div');
 
 const getN = (min, max) => (Math.random() * (max - min) + min) | 0;
-const generateData = (n) => Array(n).fill(0).map(x => getN(50, 300));
+const generateData = (n) => Array(n).fill(0).map(x => getN(100, 500));
 
 const width = 800;
 const height = 300;
@@ -16,21 +16,40 @@ const svg = d3.select(root).append('svg');
 
 svg.
     attr('width', width).
-    attr('height', height).
-    style('margin', '0 auto')
+    attr('height', height)
 ;
 
 const g = svg.append('g');
 
-const getRGBColor = (n, frequency = 0.3) => [
-    Math.sin(frequency * n + 0) * 127 + 128,
-    Math.sin(frequency * n + 2 * Math.PI / 3) * 127 + 128,
-    Math.sin(frequency * n + 4 * Math.PI / 3) * 127 + 128,
-].map(n => Math.round(n)).join(',');
-
 const update = (el, data) => {
-    const barWidth = 15;
-    const spacing = 1;
+    const xPadding = 20;
+
+    const xSpacing = 3;
+
+    const xScale =
+        d3.scaleLinear().
+        domain([0, data.length]).
+        range([xPadding, width - xPadding])
+    ;
+
+    const yPadding = 20;
+
+    const yScale =
+        d3.scaleLinear().
+        domain([0, d3.max(data, (d) => d)]).
+        range([10, height - yPadding])
+    ;
+
+    const xAxis =
+        d3.axisBottom(xScale).
+        ticks(data.length);
+
+    el.append('g').
+        attr('class', 'axis x').
+        attr('transform', `translate(0, ${height - 20})`).
+        call(xAxis);
+
+    el.select('g.axis.x').call(xAxis);
 
     const update = el.selectAll('.bar').data(data);
     
@@ -38,20 +57,23 @@ const update = (el, data) => {
 
     const exit = update.exit();
 
+    const color =
+        d3.scaleSequential(d3.interpolatePlasma).
+        domain([0, data.length]);
+
     enter.
-        attr('width', barWidth).
-        attr('height', 0).
-        attr('y', (d) => height).
-        attr('x', (d, i) => (barWidth + spacing) * i)
+        attr('x', (d, i) => xScale(i) + xSpacing / 2).
+        attr('width', (d, i) => (width / data.length) - xSpacing).
+        attr('y', (d) => height - yPadding)
     ;
 
     enter.merge(update).
         transition().
-        attr('y', (d) => height - d).
-        attr('height', (d) => d).
-        attr('fill', (d, i) =>
-            `rgb(${getRGBColor(i)})`
-        )
+        attr('x', (d, i) => xScale(i) + xSpacing / 2).
+        attr('width', (d, i) => (width / data.length) - xSpacing).
+        attr('y', (d) => height - yPadding - yScale(d)).
+        attr('height', (d) => yScale(d)).
+        attr('fill', (d, i) => `${color(i)}`)
     ;
 
     exit.transition().
@@ -63,6 +85,6 @@ const update = (el, data) => {
 
 update(g, generateData(getN(30, 50)));
 
-setInterval(() => {
+setTimeout(() => {
     update(g, generateData(getN(30, 50)));
-}, 1000);
+}, 2000);
