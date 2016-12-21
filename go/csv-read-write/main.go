@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/wmartins/playground/go/csv-read-write/csv"
 	"fmt"
-	"sync"
-	"time"
-	"runtime"
+	"github.com/wmartins/playground/go/csv-read-write/csv"
 	"log"
 	"os"
+	"runtime"
 	"strconv"
+	"sync"
+	"time"
 )
 
 func generate(n int) {
@@ -38,7 +38,7 @@ func read(path string) {
 	}()
 
 	wg.Add(workers)
-	for i := 0 ; i < workers; i++ {
+	for i := 0; i < workers; i++ {
 		go func() {
 			for record := range c {
 				fmt.Println(record)
@@ -74,11 +74,11 @@ func main() {
 		}
 
 		generate(num)
-    } else {
+	} else {
 		if argsLen < 2 {
 			log.Fatal("You must provide a file to read")
 		}
 
 		read(os.Args[1])
-    }
+	}
 }
