@@ -34,7 +34,7 @@ func read(path string) {
 	c := make(chan []string)
 
 	go func() {
-		csv.Read("file.csv", c)
+		csv.Read(path, c)
 	}()
 
 	wg.Add(workers)
