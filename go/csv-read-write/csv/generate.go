@@ -1,13 +1,13 @@
 package csv
 
 import (
-	"github.com/icrowley/fake"
 	"encoding/csv"
+	"github.com/icrowley/fake"
 	"os"
 )
 
 func writeHeader(writer *csv.Writer) {
-	writer.Write([]string {
+	writer.Write([]string{
 		"Name",
 		"Country",
 		"Email",
@@ -21,7 +21,7 @@ func Generate(n int) {
 	writeHeader(writer)
 
 	for i := 0; i < n; i++ {
-		writer.Write([]string {
+		writer.Write([]string{
 			fake.FullName(),
 			fake.Country(),
 			fake.EmailAddress(),

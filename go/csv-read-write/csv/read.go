@@ -2,12 +2,12 @@ package csv
 
 import (
 	"encoding/csv"
-	"os"
 	"io"
 	"log"
+	"os"
 )
 
-func Read(path string, c chan<- [] string) {
+func Read(path string, c chan<- []string) {
 	file, err := os.Open(path)
 
 	if err != nil {
@@ -26,9 +26,12 @@ func Read(path string, c chan<- [] string) {
 			break
 		}
 
-		if err, ok := err.(*csv.ParseError); ok &&
-		err.Err != csv.ErrFieldCount {
-			log.Fatal(err)
+		if err != nil {
+			err := err.(*csv.ParseError)
+
+			if err.Err != csv.ErrFieldCount {
+				log.Fatal(err)
+			}
 		}
 
 		c <- record
